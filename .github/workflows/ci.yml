@@ -60,7 +60,7 @@ jobs:
 
       - name: Copy files to remote server
         run: |
-          echo "${{ secrets.AZURE_SSH_KEY }}" > key.pem
+          echo "${{ secrets.AZURE_SSH_KEY }}" | tr -d '\r' > key.pem
           chmod 600 key.pem
           scp -o StrictHostKeyChecking=no -i key.pem deploy.sh ${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_SERVER }}:~/
           scp -o StrictHostKeyChecking=no -i key.pem docker-compose.yaml ${{ vars.DEPLOY_USER }}@${{ vars.DEPLOY_SERVER }}:~/
