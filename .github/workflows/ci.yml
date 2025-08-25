@@ -5,29 +5,28 @@ on:
     branches:
       - main
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: LogIn to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push FE
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: idtruoc/febookingservice:latest
-          context: "{{defaultContext}}:febookingservice"
-      -
-        name: Build, test and push BE
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: idtruoc/bookingservice:latest
-          context: "{{defaultContext}}:bookingservice"
+#  docker:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: LogIn to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ vars.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#      - name: Build and push FE
+#        uses: docker/build-push-action@v6
+#        with:
+#          push: true
+#          tags: idtruoc/febookingservice:latest
+#          context: "{{defaultContext}}:febookingservice"
+#      -
+#        name: Build, test and push BE
+#        uses: docker/build-push-action@v6
+#        with:
+#          push: true
+#          tags: idtruoc/bookingservice:latest
+#          context: "{{defaultContext}}:bookingservice"
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,12 +59,22 @@ jobs:
           chmod +x deploy.sh
 
 
-      - name: Copy files to Azure VM
-        run: |
-          echo "${{ secrets.AZURE_SSH_KEY }}" > key.pem
-          chmod 600 key.pem
-          scp -o StrictHostKeyChecking=no -i key.pem deploy.sh docker-compose.yaml azureuser@172.187.193.117:~/
-
-      - name: SSH to Azure VM and deploy
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem azureuser@172.187.193.117 './deploy.sh'
+#      - name: Copy files to Azure VM
+#        run: |
+#          echo "${{ secrets.AZURE_SSH_KEY }}" > key.pem
+#          chmod 600 key.pem
+#          scp -o StrictHostKeyChecking=no -i key.pem deploy.sh docker-compose.yaml azureuser@172.187.193.117:~/
+#
+#      - name: SSH to Azure VM and deploy
+#        run: |
+#          ssh -o StrictHostKeyChecking=no -i key.pem azureuser@172.187.193.117 './deploy.sh'
+      - add_ssh_keys:
+          fingerprints:
+            - $${{ secrets.AZURE_SSH_KEY}}
+      - run:
+          name: copy-file-to-remote-server
+          command: |
+            chmod +x deploy.sh
+            scp -oStrictHostKeyChecking=no deploy.sh ${{ vars.DEPLOY_USER}}@${{vars.DEPLOY_SERVER}}:~/
+            scp docker-compose.yaml ${{ vars.DEPLOY_USER}}@${{vars.DEPLOY_SERVER}}:~/
+      - run: ssh -v  ${{ vars.DEPLOY_USER}}@${{vars.DEPLOY_SERVER}} './deploy.sh'
