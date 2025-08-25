@@ -31,12 +31,6 @@ type BookingResponse = {
   message: string;
 };
 
-type CheckoutSessionResponse = {
-  status: string;
-  message: string;
-  sessionId: string;
-  sessionUrl: string;
-};
 
 type PageResponse<T> = {
   content: T[];
@@ -72,7 +66,7 @@ const EventDetail: React.FC = () => {
   const [event, setEvent] = useState<EventDto | null>(null);
   const [related, setRelated] = useState<EventDto[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [total, setTotal] = useState(0);
+  // const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
@@ -101,7 +95,7 @@ const EventDetail: React.FC = () => {
         if (!mounted) return;
 
         setEvent(eventRes.data);
-        setTotal(eventRes.data.ticketPrice * quantity);
+        // setTotal(eventRes.data.ticketPrice * quantity);
 
         // 2) More like this — lấy 8 bản ghi, sort theo startTime asc + title asc
         const params = buildPageParams(0, 8, ['startTime,asc', 'title,asc']);

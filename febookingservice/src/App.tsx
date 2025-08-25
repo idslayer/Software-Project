@@ -1,98 +1,5 @@
-// import { Box } from "@mui/material";
-// import React, { useState } from "react";
-// import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-// import "./App.css";
-// import Footer from "./pages/footer/footer";
-// import Header from "./pages/header/header";
-// import SignIn from "./pages/login/login";
-// import ProtectedRoute from "./utility/ProtectedRoute";
-// import Home from "./pages/home/home";
-// import EventDetail from "./pages/event/eventdetail";
-// const App: React.FC = () => {
-//   const [headerParams, setHeaderParams] = useState({
-//     searchParam: "random",
-//     filter: {
-//       mediaType: "image",
-//     },
-//     username: "",
-//   });
-//   const checkHeaderValue = (e: any) => {
-//     if ("string" === typeof e)
-//       setHeaderParams({
-//         ...headerParams,
-//         searchParam: e,
-//       });
-//     else {
-//       setHeaderParams({
-//         ...headerParams,
-//         filter: e,
-//       });
-//     }
-//   };
-
-//   function Authentication() {
-//     // const token = localStorage.getItem("token") || "";
-//     // return token.length > 0;
-//     return true;
-//   }
-
-//   return (
-//     <Router>
-//       <Box
-//         display="flex"
-//         flexDirection="column"
-//         minHeight="100vh"
-//         width={"100vw"}
-//       >
-//         <Header onSearchChange={checkHeaderValue} />
-//         <div className="flex flex-col bg-white min-h-[1000px]">
-//           <Routes>
-//             <Route
-//               path="/"
-//               element={
-//                 <ProtectedRoute authenticated={Authentication()}>
-//                   <Home/>
-//                 </ProtectedRoute>
-                
-//               }
-//             />
-           
-//               {/* NEW: route chi tiết sự kiện có tham số id */}
-//             <Route
-//               path="/events/:id"
-//               element={
-//                 // Nếu muốn public, bỏ ProtectedRoute:
-//                 // <EventDetail />
-//                 <ProtectedRoute authenticated={Authentication()}>
-//                   <EventDetail />
-//                 </ProtectedRoute>
-//               }
-//             />
-//             {/* <Route
-//               path="/event"
-//               element={
-//                 <ProtectedRoute authenticated={Authentication()}>
-//                   <EventDetail/>
-//                 </ProtectedRoute>
-//               }
-//             /> */}
-//             <Route path="/login" element={<SignIn />} />
-          
-//           </Routes>
-//         </div>
-//         <Footer />
-//       </Box>
-//     </Router>
-//   );
-// };
-
-// export default App;
-
-
-//
 
 import { Box } from "@mui/material";
-import React, { useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import Footer from "./pages/footer/footer";
@@ -112,25 +19,15 @@ import { AuthProvider } from "./pages/auth/AuthContext";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
 
 const App: React.FC = () => {
-  const [headerParams, setHeaderParams] = useState({
-    searchParam: "random",
-    filter: { mediaType: "image" },
-    username: "",
-  });
+  
 
-  const checkHeaderValue = (e: any) => {
-    if (typeof e === "string") {
-      setHeaderParams(prev => ({ ...prev, searchParam: e }));
-    } else {
-      setHeaderParams(prev => ({ ...prev, filter: e }));
-    }
-  };
+
 
   return (
     <Router>
       <AuthProvider>
         <Box display="flex" flexDirection="column" minHeight="100vh" width={"100vw"}>
-          <Header onSearchChange={checkHeaderValue} />
+          <Header />
           <div className="flex flex-col bg-white min-h-[1000px]">
             <Routes>
               <Route

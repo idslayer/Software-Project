@@ -245,7 +245,7 @@ const MyBookings: React.FC = () => {
                   <span
                     className={`bklist-badge-status ${
                       b.status === 'PENDING' ? 'pending' :
-                      b.status === 'PAID' ? 'paid' : 'canceled'
+                      b.status === 'CONFIRMED' ? 'paid' : 'canceled'
                     }`}
                   >
                     {b.status}
@@ -276,7 +276,7 @@ const MyBookings: React.FC = () => {
               <span className="bklist-mono">{b.bookingId}</span>
               <span className={`bklist-badge-status ${
                 b.status === 'PENDING' ? 'pending' :
-                b.status === 'PAID' ? 'paid' : 'canceled'
+                b.status === 'CONFIRMED' ? 'paid' : 'canceled'
               }`}>{b.status}</span>
             </div>
             <div className="bklist-card-row"><strong>Event ID:</strong> {b.eventId}</div>

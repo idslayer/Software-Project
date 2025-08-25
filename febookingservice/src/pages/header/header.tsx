@@ -1,23 +1,12 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import '../home/home.css';
 import { api } from '../api/api';
-import { AutoComplete, Button, Input, Select } from "antd";
-import { useEffect, useState } from "react";
 import { useAuth } from '../auth/AuthContext';
-import {
-  deleteSearch,
-  fetchRecentSearches,
-  saveSearch,
-} from "../../service/service";
-import { CloseOutlined, SearchOutlined } from "@ant-design/icons";
 
-export default function Header({ onSearchChange }: any) {
+export default function Header({ }: any) {
   const { user, refresh } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const onLogo = () => {
-    navigate(`/`);
-  };
+
 
  const onLogout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -32,52 +21,6 @@ export default function Header({ onSearchChange }: any) {
     }
   };
 
-  const [search, setSearch] = useState("");
-  const [recentSearch, setRecentSearch] = useState<any>();
-  const handleSaveSearchPromp = async () => {
-    try {
-      (await saveSearch(search)) as any;
-      handleGetSearch();
-    } catch (error: any) {
-      console.log(
-        `${error.response?.data?.message || "Something went wrong."} `
-      );
-    }
-  };
-  const handleDeleteSearchPromp = async (id: any) => {
-    try {
-      (await deleteSearch(id)) as any;
-      handleGetSearch();
-    } catch (error: any) {
-      console.log(
-        `${error.response?.data?.message || "Something went wrong."} `
-      );
-    }
-  };
-  const handleGetSearch = async () => {
-    try {
-      const data = await fetchRecentSearches();
-      if (data?.data?.searches?.length == 0) {
-        setRecentSearch([]);
-      } else
-        setRecentSearch(
-          data?.data?.searches.map((item: any) => {
-            return {
-              key: item.id,
-              value: item.query,
-            };
-          })
-        );
-    } catch (error: any) {
-      console.log(
-        `${error.response?.data?.message || "Something went wrong."} `
-      );
-    }
-  };
-  const verifyLogin = localStorage.getItem("token") ?? false;
-  useEffect(() => {
-    handleGetSearch();
-  }, []);
   return (
       <nav className="navbar">
         <div className="nav-container">
