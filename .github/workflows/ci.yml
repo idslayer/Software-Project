@@ -29,4 +29,43 @@ jobs:
           tags: idtruoc/bookingservice:latest
           context: "{{defaultContext}}:bookingservice"
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - name: Generate docker-compose.yaml
+        run: |
+          cat <<EOF > docker-compose.yaml
+          version: '3'
+          services:
+            frontend:
+              image: idtruoc/febookingservice:latest
+              ports:
+                - "5173:5173"
+            backend:
+              image: idtruoc/bookingservice:latest
+              ports:
+                - "8080:8080"
+          EOF
 
+      - name: Generate deploy.sh
+        run: |
+          cat <<'EOF' > deploy.sh
+          #!/bin/bash
+          set -e
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
+          EOF
+          chmod +x deploy.sh
+
+
+      - name: Copy files to Azure VM
+        run: |
+          echo "${{ secrets.AZURE_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+          scp -o StrictHostKeyChecking=no -i key.pem deploy.sh docker-compose.yaml azureuser@172.187.193.117:~/
+
+      - name: SSH to Azure VM and deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem azureuser@172.187.193.117 './deploy.sh'
