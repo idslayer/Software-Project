@@ -15,8 +15,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 170261287758-4a5n7rrpobve72ab7jkpv8673ghtgved.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ${GOOGLE_CLIENT_ID:170261287758-4a5n7rrpobve72ab7jkpv8673ghtgved.apps.googleusercontent.com}
+            client-secret: ${GOOGLE_CLIENT_SECRET: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}
 
 
 kafka:
@@ -27,7 +27,7 @@ kafka:
     value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 stripe:
-  secretKey: sk_test_51RfVuEQvBB2itwygiOuVK2MND4hJ3Dksq9DAs4mEExkPHx3kQTuZYlkP845TTqrHCy5lVik4lnf8kiOs63RbWLJ500g0DK2GK0
+  secretKey: ${STRIPE_SECRET_KEY:sk_test_51RfVuEQvBB2itwygiOuVK2MND4hJ3Dksq9DAs4mEExkPHx3kQTuZYlkP845TTqrHCy5lVik4lnf8kiOs63RbWLJ500g0DK2GK0}
 
 
 server:
