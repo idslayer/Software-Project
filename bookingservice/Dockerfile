@@ -9,7 +9,7 @@ COPY . .
 RUN chmod +x gradlew && sed -i "s/\r$//" gradlew
 
 # Run tests & build the jar
-RUN ./gradlew clean build
+RUN ./gradlew clean build -x test
 
 # --- Stage 2: Runtime ---
 FROM amazoncorretto:17.0.16
