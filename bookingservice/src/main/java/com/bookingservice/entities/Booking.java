@@ -23,9 +23,9 @@ public class Booking {
     private Double totalPrice;
 
     @Enumerated(EnumType.STRING)
-    private BookingStatus status = BookingStatus.PENDING;
+    private BookingStatus status;
 
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
     @Column(columnDefinition = "TEXT")
     private String sessionUrl;
 }

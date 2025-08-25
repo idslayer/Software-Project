@@ -24,10 +24,10 @@ public class Payment {
 
     private String stripePaymentId;
     private Double amount;
-    private String currency = "GDP";
+    private String currency;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus = PaymentStatus.INITIATED;
+    private PaymentStatus paymentStatus;
 
     private Instant paidAt;
 }

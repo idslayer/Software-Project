@@ -26,7 +26,7 @@ public class Event {
     private Integer totalSeats;
     private Integer availableSeats;
     private Double ticketPrice;
-    private Instant createdAt = Instant.now();
+    private Instant createdAt;
     @Column(columnDefinition = "TEXT")
     private String pictureUrl;
 }
