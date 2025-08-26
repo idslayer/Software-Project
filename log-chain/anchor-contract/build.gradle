@@ -1,0 +1,86 @@
+plugins {
+    id 'com.gradleup.shadow' version '8.3.5'
+    id 'application'
+//    id 'checkstyle'
+    id 'jacoco'
+}
+
+group = 'io.logchain'
+version = '1.0.0'
+
+//java {
+//    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+//}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+ext {
+    lombokVersion = '1.18.32'
+}
+dependencies {
+    implementation 'org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.4'
+//    implementation 'org.hyperledger.fabric-chaincode-java:fabric-contract-api:2.5.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+}
+application {
+    mainClass = 'org.hyperledger.fabric.contract.ContractRouter'
+}
+
+//checkstyle {
+//    toolVersion '8.21'
+//    configFile file("config/checkstyle/checkstyle.xml")
+//}
+//
+//checkstyleMain {
+//    source ='src/main/java'
+//}
+//
+//checkstyleTest {
+//    source ='src/test/java'
+//}
+
+jacocoTestReport {
+    dependsOn test
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.9
+            }
+        }
+    }
+
+    finalizedBy jacocoTestReport
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+mainClassName = 'org.hyperledger.fabric.contract.ContractRouter'
+shadowJar {
+    archiveBaseName = 'chaincode'
+    archiveVersion = ''
+    archiveClassifier = ''
+    mergeServiceFiles()
+
+    manifest {
+        attributes 'Main-Class': 'org.hyperledger.fabric.contract.ContractRouter'
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+installDist.dependsOn check
