@@ -1,0 +1,27 @@
+{
+  "index_patterns": ["anchor-*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "log": {
+        "type": "object"
+      },
+      "batchId": {
+        "type": "keyword"
+      },
+      "merkleRoot": {
+        "type": "keyword"
+      },
+      "fabricTxId": {
+        "type": "keyword"
+      },
+      "anchoredAt": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_millis"
+      }
+    }
+  }
+}

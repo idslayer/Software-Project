@@ -1,0 +1,6 @@
+- pipeline.id: raw_log
+  path.config: "/usr/share/logstash/pipeline/raw_log.conf"
+- pipeline.id: norm_log
+  path.config: "/usr/share/logstash/pipeline/norm_log.conf"
+- pipeline.id: anchor
+  path.config: "/usr/share/logstash/pipeline/anchor.conf"

@@ -1,0 +1,70 @@
+server:
+  port: 8080
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP:127.0.0.1:9092}
+      group-id: bundler
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "io.chainlog"
+log-chain:
+  window:
+    ms: 5000
+    maxRecords: 50000
+  crypto:
+    hash: "SHA-256"
+  normalizer:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:127.0.0.1:9092}
+    group-id: logchain-normalizer
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    auto-offset-reset: earliest
+    consume-topic: sample_producer.raw.log
+    produce-topic: sample_producer.norm.log
+    worker-count: 1
+  bundler:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:127.0.0.1:9092}
+    group-id: logchain-bundler
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    auto-offset-reset: earliest
+    consume-topic: sample_producer.norm.log
+    produce-topic: sample_producer.anchor
+    worker-count: 1
+    batch-size: 100
+    filter:
+      - SMART-CONTRACT-BOOKING-CREATE
+      - SMART-CONTRACT-BOOKING-CANCEL
+      - SMART-CONTRACT-PAYMENT-SUCCESS
+      - SMART-CONTRACT-PAYMENT-FAIL
+    max-retries: 5
+    delay-millis: 2000
+fabric:
+  peer-endpoint: ${FABRIC_ENDPOINT:192.168.1.3:7051}
+  override-auth: ${FABRIC_OVERRIDE_AUTH:peer0.org1.example.com}
+  mspId: Org1MSP
+  network-name: log-chain
+  contract-name: anchor-contract
+  certPath: ${FABRIC_CERT_PATH:/etc/fabric/msp/signcerts}
+  keyPath: ${FABRIC_KEY_PATH:/etc/fabric/msp/keystore}
+  tls-cert-path: ${FABRIC_TLS_CERT:/etc/fabric/tls/ca.crt}
+elastic:
+  address: ${ELASTIC_HOST:http://localhost:9200}
+  user: ${ELASTIC_USER:elastic}
+  password: ${ELASTIC_PASSWORD:changeme}
+  norm-log-index: norm-logs-*
+  anchor-index: anchor-*
+logging:
+  level:
+    io:
+      logchain:
+        bundler: DEBUG
+    root: info
+    web: info

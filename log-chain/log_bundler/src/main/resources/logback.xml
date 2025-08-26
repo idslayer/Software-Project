@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %cyan(%d{yy-MM-dd HH:mm:ss.SSS}) [%green(%t)] %highlight(%-5level) %yellow(%C{36}) %line: %msg%n%throwable
+            </Pattern>
+        </encoder>
+    </appender>
+    <springProfile name="dev | default">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root >
+    </springProfile>
+    <springProfile name="prod | production">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root >
+    </springProfile>
+</configuration>
