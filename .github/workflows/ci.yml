@@ -45,8 +45,6 @@ jobs:
               image: idtruoc/bookingservice:latest
               ports:
                 - "8080:8080"
-#            volumes:
-#              - /data-log:/data/log 
           EOF
       - name: Generate deploy.sh
         run: |
