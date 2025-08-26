@@ -17,7 +17,7 @@ FROM amazoncorretto:17.0.16
 WORKDIR /app
 
 # Copy only the built jar from builder stage
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/*.jar bookingservice.jar
 
 # Run the application
-CMD ["java", "-jar", "target/bookingservice.jar"]
+CMD ["java", "-jar", "bookingservice.jar"]

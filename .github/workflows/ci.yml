@@ -40,7 +40,7 @@ jobs:
             frontend:
               image: idtruoc/febookingservice:latest
               ports:
-                - "5173:5173"
+                - "5173:80"
             backend:
               image: idtruoc/bookingservice:latest
               ports:
