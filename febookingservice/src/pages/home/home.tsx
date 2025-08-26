@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './home.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { api } from '../api/api';
 type EventDto = {
   id: number;
   title: string;
@@ -25,11 +25,6 @@ type PageResponse<T> = {
   totalElements: number;
   totalPages: number;
 }
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://phuong.tiktuzki.com',
-  withCredentials: true
-});
 
 // Helper: build query params with multiple sort keys
 const buildPageParams = (page: number, size: number, sorts: string[]) => {

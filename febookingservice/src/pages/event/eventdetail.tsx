@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './eventdetail.css';
 import { useAuth } from '../auth/AuthContext';
-
+import { api } from '../api/api';
 type EventDto = {
   id: number;
   title: string;
@@ -42,11 +42,6 @@ type PageResponse<T> = {
 
 // const serviceFee = 12.5; // GBP
 const maxTickets = 8;
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://phuong.tiktuzki.com',
-  withCredentials: true
-});
 
 // Helper: build query params with multiple sort keys (sort=field,dir)
 const buildPageParams = (page: number, size: number, sorts: string[]) => {
