@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 # Run the application
-CMD ["java", "-jar", "bookingservice.jar"]
+CMD ["java", "-jar", "target/bookingservice.jar"]
