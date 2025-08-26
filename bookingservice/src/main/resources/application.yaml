@@ -1,9 +1,9 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/booking
-    username: postgres
-    password: 123
+    url: ${DATASOURCE_URL:jdbc:postgresql://172.187.193.117:5432/booking}
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:123}
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,13 +19,6 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET: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}
 
 
-kafka:
-  bootstrap-servers: localhost:9092
-  client-id: booking-service
-  producer:
-    key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
 stripe:
   secretKey: ${STRIPE_SECRET_KEY:sk_test_51RfVuEQvBB2itwygiOuVK2MND4hJ3Dksq9DAs4mEExkPHx3kQTuZYlkP845TTqrHCy5lVik4lnf8kiOs63RbWLJ500g0DK2GK0}
 
@@ -35,7 +28,7 @@ server:
 
 fe-server:
   port: 5173
-  url: http://localhost:5173/
+  url: ${FE_SERVER:http://172.187.193.117:5173/}
 
 springdoc:
   api-docs:
@@ -48,6 +41,6 @@ springdoc:
     config-url: /api-docs/swagger-config
 
 swagger:
-  server-url: "${SERVER-URL:http://localhost:8080/}"
+  server-url: "${SERVER-URL:http://172.187.193.117:8080/}"
 
 

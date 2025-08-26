@@ -46,7 +46,7 @@ export default function Header({ }: any) {
               </li>
             </>
           ) : (
-                 <li><a href="/login" className="login-btn">Login / Register</a></li>
+                 <li><a href="/login" className="login-btn">Login</a></li>
           )}
           </ul>
          

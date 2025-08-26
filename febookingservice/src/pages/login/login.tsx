@@ -4,7 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import './login.css';
 
 const API_BASE_URL =
-  (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:8080';
+  (import.meta as any).env?.VITE_API_BASE_URL || 'http://172.187.193.117:8080';
 
 const Login: React.FC = () => {
   const { refresh, user } = useAuth();
