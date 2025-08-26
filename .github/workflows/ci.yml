@@ -14,12 +14,12 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push FE
-        uses: docker/build-push-action@v6
-        with:
-          push: true
-          tags: idtruoc/febookingservice:latest
-          context: "{{defaultContext}}:febookingservice"
+#      - name: Build and push FE
+#        uses: docker/build-push-action@v6
+#        with:
+#          push: true
+#          tags: idtruoc/febookingservice:latest
+#          context: "{{defaultContext}}:febookingservice"
       -
         name: Build, test and push BE
         uses: docker/build-push-action@v6
