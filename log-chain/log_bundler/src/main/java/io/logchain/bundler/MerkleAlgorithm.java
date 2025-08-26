@@ -85,4 +85,27 @@ public class MerkleAlgorithm {
                 .build();
     }
 
+    public static boolean verifyProof(
+        String leafHash,
+        List<String> merklePath,
+        List<Boolean> isRight,
+        String expectedRoot) throws Exception {
+
+        String hash = leafHash;
+
+        for (int i = 0; i < merklePath.size(); i++) {
+            String sibling = merklePath.get(i);
+
+            if (isRight.get(i)) {
+                // leaf is left, sibling is right
+                hash = computeHash(hash + sibling);
+            } else {
+                // sibling is left, leaf is right
+                hash = computeHash(sibling + hash);
+            }
+        }
+
+        return hash.equals(expectedRoot);
+    }
+
 }
