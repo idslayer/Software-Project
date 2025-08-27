@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './home.css';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { api } from '../api/api';
 type EventDto = {
   id: number;
