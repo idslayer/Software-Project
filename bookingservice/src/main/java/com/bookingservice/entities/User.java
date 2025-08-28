@@ -26,4 +26,6 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String pictureUrl;
     private AuthProvider authProvider;
+    private String password; // hash value
+    private String username;
 }

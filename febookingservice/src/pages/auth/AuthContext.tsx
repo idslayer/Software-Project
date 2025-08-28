@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api/api';
 
-type User = { name?: string; email?: string; picture?: string; appUserId?: number };
+type User = { name?: string; email?: string; picture?: string; appUserId?: number; role?: string};
 type AuthState = { user: User | null; loading: boolean; refresh: () => Promise<void> };
 
 const Ctx = createContext<AuthState>({ user: null, loading: true, refresh: async () => {} });
@@ -12,7 +12,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refresh = async () => {
     try {
-      const res = await api.get<User>('/auth/me');
+      const token = localStorage.getItem("token");
+      const res = await api.get<User>("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUser(res.data);
     } catch {
       setUser(null);  // 401 → chưa đăng nhập/hết phiên

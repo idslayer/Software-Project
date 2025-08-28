@@ -12,6 +12,7 @@ export default function Header({ }: any) {
     e.preventDefault();
     try {
       const res = await api.post('/logout'); // Axios sends cookies + XSRF header
+      localStorage.removeItem("token");
       console.log('logout status', res.status);
     } catch (err) {
       console.warn('logout failed', err);
@@ -36,8 +37,15 @@ export default function Header({ }: any) {
              {user ? (
             <>
               <li><span className="nav-link">Hi, {user.name || user.email}</span></li>
-              <li><a href="/admin/events" className="nav-link">Admin Events</a></li>
-                <li><a href="/admin/dashboard" className="nav-link">Admin DB</a></li>
+
+               {/* Admin links: chỉ hiện khi role là admin */}
+                {user.role === "ADMIN" && (
+                  <>
+                    <li><a href="/admin/events" className="nav-link">Admin Events</a></li>
+                    <li><a href="/admin/dashboard" className="nav-link">Admin DB</a></li>
+                  </>
+                )}
+            
               <li><a href="/bookings" className="nav-link">My Bookings</a></li>
               <li>
                 <a href="#" className="login-btn" onClick={onLogout}>

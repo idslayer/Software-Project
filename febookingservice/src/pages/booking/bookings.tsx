@@ -1,7 +1,8 @@
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { api } from '../api/api';
 import './bookings.css';
+import { useAuth } from '../auth/AuthContext';
 
 type BookingStatus = 'PENDING' | 'CONFIRMED' | 'CANCELED';
 
@@ -35,12 +36,19 @@ const dtFmt: Intl.DateTimeFormatOptions = { dateStyle: 'medium', timeStyle: 'sho
 
 const MyBookings: React.FC = () => {
   // Filters & paging
+   const [count, setCount] = useState({
+    all: 0,
+    pending: 0,
+    paid: 0,
+    canceled: 0,
+  });
   const [status, setStatus] = useState<'ALL' | BookingStatus>('ALL');
   const [searchId, setSearchId] = useState('');
   const [sort, setSort] = useState<SortKey>('createdAt,desc');
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(10);
-
+  const { user } = useAuth();
+  const USER_ID = user?.appUserId || "";
   // Data
   const [data, setData] = useState<PageResponse<BookingDto> | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,6 +61,7 @@ const MyBookings: React.FC = () => {
   // Fetch bookings
   useEffect(() => {
     let mounted = true;
+     
     const fetchPage = async () => {
       setLoading(true);
       setErr(null);
@@ -62,12 +71,15 @@ const MyBookings: React.FC = () => {
             page,
             size,
             sort,
-            status: status === 'ALL' ? undefined : status,     // backend filter
-            q: searchId || undefined,                          // optional if your BE supports "q"; else remove
+            status: status === 'ALL' ? undefined : status,    
+            q: searchId || undefined,  
+            userId: USER_ID                      
           },
           withCredentials: true,
         });
-        if (mounted) setData(res.data);
+        if (mounted) {
+          setData(res.data);
+        }
       } catch (e: any) {
         if (mounted) setErr(e?.response?.data?.message || 'Failed to load bookings');
       } finally {
@@ -86,16 +98,6 @@ const MyBookings: React.FC = () => {
   const startIdx = total === 0 ? 0 : page * size + 1;
   const endIdx = total === 0 ? 0 : Math.min((page + 1) * size, total);
   const rows = data?.content ?? [];
-
-  // status counts (computed client-side from current page only; if you need global counts, add BE API)
-  const counts = useMemo(() => {
-    const all = rows.length;
-    const pending = rows.filter(r => r.status === 'PENDING').length;
-    const paid = rows.filter(r => r.status === 'CONFIRMED').length;
-    const canceled = rows.filter(r => r.status === 'CANCELED').length;
-    return { all, pending, paid, canceled };
-  }, [rows]);
-
   const onPrev = () => setPage(p => Math.max(0, p - 1));
   const onNext = () => setPage(p => Math.min(totalPages - 1, p + 1));
   const goToPage = (p: number) => setPage(Math.min(Math.max(0, p), Math.max(0, totalPages - 1)));
@@ -121,6 +123,7 @@ const MyBookings: React.FC = () => {
         params: { page, size, sort, status: status === 'ALL' ? undefined : status, q: searchId || undefined },
       });
       setData(res.data);
+
       setCancelId(null);
     } catch (e: any) {
       alert(e?.response?.data?.message || 'Failed to cancel booking');
@@ -128,7 +131,12 @@ const MyBookings: React.FC = () => {
       setCancelLoading(false);
     }
   };
-
+   const handleIncrement = (key: keyof typeof count) => {
+    setCount((prev) => ({
+      ...prev,
+      [key]: data?.totalElements ?? 0,
+    }));
+  };
   return (
     <div className="bklist-container">
       {/* Header */}
@@ -138,20 +146,60 @@ const MyBookings: React.FC = () => {
       </div>
 
       {/* Status Tabs */}
-      <div className="bklist-tabs" role="tablist">
-        <button className={`bklist-tab ${status === 'ALL' ? 'active' : ''}`} onClick={() => setStatus('ALL')} role="tab" aria-selected={status === 'ALL'}>
-          <span>All</span> <span className="bklist-badge">{counts.all}</span>
-        </button>
-        <button className={`bklist-tab ${status === 'PENDING' ? 'active' : ''}`} onClick={() => setStatus('PENDING')} role="tab" aria-selected={status === 'PENDING'}>
-          <span>Pending</span> <span className="bklist-badge">{counts.pending}</span>
-        </button>
-        <button className={`bklist-tab ${status === 'CONFIRMED' ? 'active' : ''}`} onClick={() => setStatus('CONFIRMED')} role="tab" aria-selected={status === 'CONFIRMED'}>
-          <span>Paid</span> <span className="bklist-badge">{counts.paid}</span>
-        </button>
-        <button className={`bklist-tab ${status === 'CANCELED' ? 'active' : ''}`} onClick={() => setStatus('CANCELED')} role="tab" aria-selected={status === 'CANCELED'}>
-          <span>Canceled</span> <span className="bklist-badge">{counts.canceled}</span>
-        </button>
-      </div>
+    <div className="bklist-tabs" role="tablist">
+      <button
+        className={`bklist-tab ${status === 'ALL' ? 'active' : ''}`}
+        onClick={() => {
+          setStatus('ALL');
+          handleIncrement('all');
+        }}
+        role="tab"
+        aria-selected={status === 'ALL'}
+      >
+        <span>All</span>
+        <span className="bklist-badge"> {count.all }</span>
+      </button>
+
+      <button
+        className={`bklist-tab ${status === 'PENDING' ? 'active' : ''}`}
+        onClick={() => {
+          setStatus('PENDING');
+          handleIncrement('pending');
+        }}
+        role="tab"
+        aria-selected={status === 'PENDING'}
+      >
+        <span>Pending</span>
+        <span className="bklist-badge">{count.pending}</span>
+      </button>
+
+      <button
+        className={`bklist-tab ${status === 'CONFIRMED' ? 'active' : ''}`}
+        onClick={() => {
+          setStatus('CONFIRMED');
+          handleIncrement('paid');
+        }}
+        role="tab"
+        aria-selected={status === 'CONFIRMED'}
+      >
+        <span>Paid</span>
+        <span className="bklist-badge">{count.paid}</span>
+      </button>
+
+      <button
+        className={`bklist-tab ${status === 'CANCELED' ? 'active' : ''}`}
+        onClick={() => {
+          setStatus('CANCELED');
+          handleIncrement('canceled');
+        }}
+        role="tab"
+        aria-selected={status === 'CANCELED'}
+      >
+        <span>Canceled</span>
+        <span className="bklist-badge">{count.canceled}</span>
+      </button>
+    </div>
+
 
       {/* Filter Bar */}
       <div className="bklist-filterbar">

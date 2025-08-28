@@ -27,10 +27,6 @@ public class EventController {
     @GetMapping
     public ResponseEntity<PageResponse<EventResponse>> getAll(@ParameterObject Pageable pageable, @ParameterObject EventFilterRequest request) {
         request.setPageable(pageable);
-        for(int i=0;i<100;i++){
-            log.info("SMART-CONTRACT-BOOKING-CREATE: {}", "test" + i + 1);
-        }
-
         return
             ResponseEntity.ok(service.findAll(request));
     }

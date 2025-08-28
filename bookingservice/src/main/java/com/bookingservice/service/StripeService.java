@@ -62,6 +62,7 @@ public class StripeService {
             log.error("ssadasda:" + productRequest.getPaymentId());
             SessionCreateParams params =
                     SessionCreateParams.builder()
+                            .setLocale(SessionCreateParams.Locale.EN_GB)
                             .setMode(SessionCreateParams.Mode.PAYMENT)
                             .setSuccessUrl(serverFe+ "payment/success/" + productRequest.getPaymentId())
                             .setCancelUrl(serverFe+ "payment/fail/" + productRequest.getPaymentId())

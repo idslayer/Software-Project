@@ -5,8 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -17,6 +18,7 @@ import java.util.List;
 public class SpringConfig {
     @Value("${fe-server.url}")
     private String serverFe;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOidcUserService customOidcUserService) throws Exception {
         http
@@ -32,7 +34,8 @@ public class SpringConfig {
                 // Cho phép truy cập không cần auth tất cả HTTP methods đến /product/v1/checkout
                 .requestMatchers("/product/v1/checkout", "/product/v1/checkout/**").permitAll()
                 // Các đường dẫn public khác
-                .requestMatchers("/", "/login").permitAll()
+                .requestMatchers("/", "/login", "/auth/login", "/auth/me").permitAll()
+
                 // swagger & openapi
                 .requestMatchers(
                     "/api-docs/**",
@@ -40,7 +43,8 @@ public class SpringConfig {
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
-
+                    ,
+                    "admin/dashboard/*"
 
                 ).permitAll()
                 // CRUD endpoints
@@ -51,10 +55,9 @@ public class SpringConfig {
                     "/bookings/*"
 
 
-
                 ).permitAll()
 
-                    // Bất kỳ request nào khác phải xác thực
+                // Bất kỳ request nào khác phải xác thực
                 .anyRequest().authenticated()
             )
 
@@ -68,21 +71,20 @@ public class SpringConfig {
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                // mặc định là POST /logout
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
                 .deleteCookies("JSESSIONID")           // xoá cookie phiên
                 .invalidateHttpSession(true)           // huỷ session server
-                .logoutSuccessHandler((req,res,auth) -> res.setStatus(200)) // SPA tự xử lý
+                .logoutSuccessHandler((req, res, auth) -> res.setStatus(200)) // SPA tự xử lý
             )
         ;
 
         return http.build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:5173","http://172.187.193.117:5173", "https://soundwave.tiktuzki.com"));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        cfg.setAllowedOrigins(List.of("http://localhost:5173", "http://172.187.193.117:5173", "https://soundwave.tiktuzki.com"));
+        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
 
@@ -90,5 +92,10 @@ public class SpringConfig {
         // Apply to all endpoints (or narrow to /product/v1/checkout if you like)
         source.registerCorsConfiguration("/**", cfg);
         return source;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

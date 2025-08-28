@@ -2,18 +2,17 @@ import React, { useState, useEffect, FormEvent, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import './login.css';
+import { api } from '../api/api';
 
-const API_BASE_URL = 'https://phuong.tiktuzki.com';
 
 
-// const API_BASE_URL =
-//   (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL =
+  (import.meta as any).env?.VITE_API_BASE_URL || 'https://phuong.tiktuzki.com';
 const Login: React.FC = () => {
-  const { refresh, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState(''); // nếu có login local sau này
-  const [password, setPassword] = useState('');
+  const [username, setusername] = useState('username'); 
+  const [password, setPassword] = useState('password');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -39,15 +38,34 @@ const Login: React.FC = () => {
       container.removeEventListener('mouseleave', onMouseLeave);
     };
   }, []);
-
-  const handleSubmit = (e: FormEvent) => {
+interface TokenResponse {
+  token: string;
+}
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: gọi API login nội bộ nếu cần
-    setTimeout(async () => {
+    try {
+      const payload = {
+        username: username,  
+        password: password,
+      };
+
+      const res = await api.post<TokenResponse>("/auth/login", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      // lưu token vào localStorage
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        alert("Login successful!");
+         navigate("/");
+      }
+    } catch (err: any) {
+      console.error("Login failed:", err);
+      alert("Login failed!");
+    } finally {
       setLoading(false);
-      await refresh();
-    }, 800);
+    }
   };
 
   const handleGoogle = (e: MouseEvent<HTMLButtonElement>) => {
@@ -68,11 +86,11 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="log-form">
           <div className="form-group">
-            <label htmlFor="email" className="form-label">Email Address</label>
+            <label htmlFor="username" className="form-label">Username</label>
             <input
-              type="email" id="email" name="email"
-              className="form-input" placeholder="Enter your email"
-              value={email} onChange={e => setEmail(e.target.value)} required
+              type="text" id="username" name="username"
+              className="form-input" placeholder="Enter your username"
+              value={username} onChange={e => setusername(e.target.value)} required
             />
           </div>
 
