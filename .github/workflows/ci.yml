@@ -45,6 +45,8 @@ jobs:
               image: idtruoc/bookingservice:latest
               ports:
                 - "8080:8080"
+              volumes:
+                - /home/azureuser/Software-Project/log-chain/data/log:/app/log
           EOF
       - name: Generate deploy.sh
         run: |
