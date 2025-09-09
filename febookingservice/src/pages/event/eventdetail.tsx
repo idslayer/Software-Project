@@ -108,7 +108,7 @@ const EventDetail: React.FC = () => {
     })();
 
     return () => { mounted = false; };
-  }, [id, quantity]);
+  }, [id]);
 
   // Fade-in
   useEffect(() => {
@@ -210,9 +210,9 @@ const EventDetail: React.FC = () => {
   }
 };
 
-  if (loading) return <div className="main-content">Đang tải…</div>;
+  if (loading) return <div className="main-content"></div>;
   if (err) return <div className="main-content" style={{ color: '#ef4444' }}>{err}</div>;
-  if (!event) return <div className="main-content">Không tìm thấy sự kiện.</div>;
+  if (!event) return <div className="main-content">Not found.</div>;
 
   return (
     <>

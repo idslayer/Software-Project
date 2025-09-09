@@ -36,12 +36,7 @@ const dtFmt: Intl.DateTimeFormatOptions = { dateStyle: 'medium', timeStyle: 'sho
 
 const MyBookings: React.FC = () => {
   // Filters & paging
-   const [count, setCount] = useState({
-    all: 0,
-    pending: 0,
-    paid: 0,
-    canceled: 0,
-  });
+
   const [status, setStatus] = useState<'ALL' | BookingStatus>('ALL');
   const [searchId, setSearchId] = useState('');
   const [sort, setSort] = useState<SortKey>('createdAt,desc');
@@ -131,12 +126,7 @@ const MyBookings: React.FC = () => {
       setCancelLoading(false);
     }
   };
-   const handleIncrement = (key: keyof typeof count) => {
-    setCount((prev) => ({
-      ...prev,
-      [key]: data?.totalElements ?? 0,
-    }));
-  };
+ 
   return (
     <div className="bklist-container">
       {/* Header */}
@@ -151,52 +141,48 @@ const MyBookings: React.FC = () => {
         className={`bklist-tab ${status === 'ALL' ? 'active' : ''}`}
         onClick={() => {
           setStatus('ALL');
-          handleIncrement('all');
         }}
         role="tab"
         aria-selected={status === 'ALL'}
       >
         <span>All</span>
-        <span className="bklist-badge"> {count.all }</span>
+      
       </button>
 
       <button
         className={`bklist-tab ${status === 'PENDING' ? 'active' : ''}`}
         onClick={() => {
           setStatus('PENDING');
-          handleIncrement('pending');
         }}
         role="tab"
         aria-selected={status === 'PENDING'}
       >
         <span>Pending</span>
-        <span className="bklist-badge">{count.pending}</span>
+      
       </button>
 
       <button
         className={`bklist-tab ${status === 'CONFIRMED' ? 'active' : ''}`}
         onClick={() => {
           setStatus('CONFIRMED');
-          handleIncrement('paid');
         }}
         role="tab"
         aria-selected={status === 'CONFIRMED'}
       >
         <span>Paid</span>
-        <span className="bklist-badge">{count.paid}</span>
+      
       </button>
 
       <button
         className={`bklist-tab ${status === 'CANCELED' ? 'active' : ''}`}
         onClick={() => {
           setStatus('CANCELED');
-          handleIncrement('canceled');
         }}
         role="tab"
         aria-selected={status === 'CANCELED'}
       >
         <span>Canceled</span>
-        <span className="bklist-badge">{count.canceled}</span>
+       
       </button>
     </div>
 

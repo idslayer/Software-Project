@@ -22,7 +22,7 @@ import { useAuth } from '../pages/auth/AuthContext';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ padding: 24 }}>Loading…</div>;
+  if (loading) return <div style={{ padding: 24 }}></div>;
   return user ? <>{children}</> : <Navigate to="/login" replace />;
 };
 

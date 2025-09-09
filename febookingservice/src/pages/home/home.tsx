@@ -101,7 +101,13 @@ const Home: React.FC = () => {
         <div className="hero-content">
           <h1>Experience Live Music Like Never Before</h1>
           <p>Discover amazing concerts, festivals, and live performances. Book your tickets instantly and join thousands of music lovers worldwide.</p>
-          <a href="#" className="book-now-btn">Book Now</a>
+          {/* <a href="/events" className="book-now-btn">Book Now</a> */}
+           <button
+                  className="book-now-btn"
+                  onClick={() => navigate(`/events`)}
+                >
+                  Book Now
+                </button>
         </div>
       </section>
 
